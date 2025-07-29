@@ -2,12 +2,15 @@ package com.aviral.journalApp.controller;
 
 import com.aviral.journalApp.entity.Journal;
 import com.aviral.journalApp.service.JournalEntryService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("journal")
@@ -18,29 +21,40 @@ public class JournalEntryController {
 
     @GetMapping
     public List<Journal> getAll() {
-        return journalEntryService.getAllJournals();
+        List<Journal> journals = journalEntryService.getAllJournals();
+
+        if (journals != null && !journals.isEmpty())
+            return journals;
+
+        return new ArrayList<>();
     }
 
     @PostMapping
-    public Journal createEntry(@RequestBody Journal journal) {
+    public ResponseEntity<Journal> createEntry(@RequestBody Journal journal) {
         journal.setDate(LocalDateTime.now());
         journalEntryService.saveJournal(journal);
-        return journal;
+
+        return new ResponseEntity<>(journal, HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
-    public Journal getJournalByID(@PathVariable String id) {
-        return journalEntryService.getJournalById(id).orElse(null);
+    public ResponseEntity<Journal> getJournalByID(@PathVariable String id) {
+        Optional<Journal> journal = journalEntryService.getJournalById(id);
+
+        if (journal.isPresent())
+            return new ResponseEntity<>(journal.get(), HttpStatus.OK);
+
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("{id}")
-    public boolean deleteJournalByID(@PathVariable String id) {
+    public ResponseEntity<?> deleteJournalByID(@PathVariable String id) {
         journalEntryService.deleteJournalByID(id);
-        return true;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping
-    public Journal updateJournal(@RequestBody Journal journal) {
+    public ResponseEntity<?> updateJournal(@RequestBody Journal journal) {
         Journal oldJournal = journalEntryService.getJournalById(journal.getId()).orElse(null);
 
         if (oldJournal != null) {
@@ -48,8 +62,10 @@ public class JournalEntryController {
             oldJournal.setContent(journal.getContent() != null && !journal.getContent().isEmpty() ? journal.getContent() : oldJournal.getContent());
 
             journalEntryService.saveJournal(oldJournal);
+
+            return new ResponseEntity<>(oldJournal, HttpStatus.OK);
         }
 
-        return oldJournal;
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }

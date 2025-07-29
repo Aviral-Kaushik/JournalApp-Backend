@@ -2,7 +2,6 @@ package com.aviral.journalApp.service;
 
 import com.aviral.journalApp.entity.Journal;
 import com.aviral.journalApp.repository.JournalEntryRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
