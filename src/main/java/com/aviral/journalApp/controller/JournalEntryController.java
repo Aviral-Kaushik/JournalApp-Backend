@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +30,12 @@ public class JournalEntryController {
 
     @PostMapping
     public ResponseEntity<Journal> createEntry(@RequestBody Journal journal) {
-        journal.setDate(LocalDateTime.now());
-        journalEntryService.saveJournal(journal);
-
-        return new ResponseEntity<>(journal, HttpStatus.CREATED);
+        try {
+            journalEntryService.saveJournal(journal);
+            return new ResponseEntity<>(journal, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("{id}")

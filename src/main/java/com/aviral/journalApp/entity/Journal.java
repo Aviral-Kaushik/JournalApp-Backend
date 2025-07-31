@@ -15,7 +15,11 @@ public class Journal {
 
     @Id
     private String id;
+
+    @NonNull
     private String title;
+
     private String content;
+
     private LocalDateTime date;
 }
