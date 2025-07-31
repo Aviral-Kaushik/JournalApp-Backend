@@ -30,6 +30,10 @@ public class UserService {
         }
     }
 
+    public void saveEntry(User user) {
+        userRepository.save(user);
+    }
+
     public Optional<User> getUserById(String id) {
         return userRepository.findById(id);
     }

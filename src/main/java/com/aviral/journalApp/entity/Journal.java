@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 
 @Document(collection = "journal")
 @Data
+@NoArgsConstructor
 public class Journal {
 
-    /// Data Annotation comes library lombok that generated Getter, Setter, Constructor at Compile Time, so we don't
+    /// Data Annotation comes library lombok that generated Getter, Setter, All-args Constructor at Compile Time, so we don't
     /// have to create them. Hence, it reduces boilerplate code.
 
     @Id

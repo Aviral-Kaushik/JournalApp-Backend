@@ -1,9 +1,12 @@
 package com.aviral.journalApp.service;
 
 import com.aviral.journalApp.entity.Journal;
+import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,13 +20,25 @@ public class JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public void saveJournal(Journal journal) {
+    @Autowired
+    private UserService userService;
+
+    public void saveJournal(Journal journal, String userName) {
         try {
+            User user = userService.findUserByUserName(userName);
+
             journal.setDate(LocalDateTime.now());
-            journalEntryRepository.save(journal);
+            Journal savedJournal = journalEntryRepository.save(journal);
+
+            user.getJournals().add(savedJournal);
+            userService.saveEntry(user);
         } catch (Exception e) {
             log.error("Exception: {}", String.valueOf(e));
         }
+    }
+
+    public void saveJournal(Journal journal) {
+        journalEntryRepository.save(journal);
     }
 
     public List<Journal> getAllJournals() {
@@ -34,7 +49,12 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
-    public void deleteJournalByID(String id) {
+    public void deleteJournalByID(String id, String userName) {
+        User user = userService.findUserByUserName(userName);
+
+        user.getJournals().removeIf(journal -> journal.getId().equals(id));
+        userService.saveEntry(user);
+
         journalEntryRepository.deleteById(id);
     }
 }
