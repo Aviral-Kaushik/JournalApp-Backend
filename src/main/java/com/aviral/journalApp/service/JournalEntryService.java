@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,18 +24,15 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
+    @Transactional
     public void saveJournal(Journal journal, String userName) {
-        try {
-            User user = userService.findUserByUserName(userName);
+        User user = userService.findUserByUserName(userName);
 
-            journal.setDate(LocalDateTime.now());
-            Journal savedJournal = journalEntryRepository.save(journal);
+        journal.setDate(LocalDateTime.now());
+        Journal savedJournal = journalEntryRepository.save(journal);
 
-            user.getJournals().add(savedJournal);
-            userService.saveEntry(user);
-        } catch (Exception e) {
-            log.error("Exception: {}", String.valueOf(e));
-        }
+        user.getJournals().add(savedJournal);
+        userService.saveEntry(user);
     }
 
     public void saveJournal(Journal journal) {
@@ -49,6 +47,7 @@ public class JournalEntryService {
         return journalEntryRepository.findById(id);
     }
 
+    @Transactional
     public void deleteJournalByID(String id, String userName) {
         User user = userService.findUserByUserName(userName);
 
