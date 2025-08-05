@@ -5,10 +5,11 @@ import com.aviral.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -17,18 +18,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    private User createUser(@RequestBody User user) {
-        userService.createUser(user);
-        return user;
-    }
+    @GetMapping
+    private ResponseEntity<User> getUserById() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    @GetMapping("{id}")
-    private ResponseEntity<User> getUserById(@PathVariable String id) {
-        Optional<User> user = userService.getUserById(id);
+        User user = userService.findUserByUserName(authentication.getName());
 
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -36,7 +33,10 @@ public class UserController {
 
     @PutMapping
     private ResponseEntity<?> updateUser(@RequestBody User user) {
-        User userData = userService.findUserByUserName(user.getUserName());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        User userData = userService.findUserByUserName(userName);
 
         if (userData != null) {
             User updatedUser = userService.updateUser(userData, user);
@@ -47,8 +47,21 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping
-    private List<User> getAllUsers() {
-        return userService.getAllUsers();
+//    @GetMapping
+//    private List<User> getAllUsers() {
+//        return userService.getAllUsers();
+//    }
+
+    @DeleteMapping
+    private ResponseEntity<?> deleteUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        User user = userService.deleteUserByUsername(userName);
+
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

@@ -27,6 +27,7 @@ public class User {
 
     @DBRef
     private List<Journal> journals = new ArrayList<>();
+    private List<String> roles;
 
     private LocalDateTime createdAt;
 }
