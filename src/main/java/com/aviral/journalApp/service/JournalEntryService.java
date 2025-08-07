@@ -5,8 +5,6 @@ import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.repository.JournalEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +30,7 @@ public class JournalEntryService {
         Journal savedJournal = journalEntryRepository.save(journal);
 
         user.getJournals().add(savedJournal);
-        userService.saveEntry(user);
+        userService.saveUser(user);
     }
 
     public void saveJournal(Journal journal) {
@@ -48,12 +46,17 @@ public class JournalEntryService {
     }
 
     @Transactional
-    public void deleteJournalByID(String id, String userName) {
+    public boolean deleteJournalByID(String id, String userName) {
         User user = userService.findUserByUserName(userName);
 
-        user.getJournals().removeIf(journal -> journal.getId().equals(id));
-        userService.saveEntry(user);
+        boolean isRemoved = user.getJournals().removeIf(journal -> journal.getId().equals(id));
 
-        journalEntryRepository.deleteById(id);
+        if (isRemoved) {
+            userService.saveUser(user);
+
+            journalEntryRepository.deleteById(id);
+        }
+
+        return isRemoved;
     }
 }
