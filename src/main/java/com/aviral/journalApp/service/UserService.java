@@ -4,11 +4,13 @@ import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +69,30 @@ public class UserService {
             return null;
 
         userRepository.deleteByUserName(username);
+        return user;
+    }
+
+    public User createAdminUser(String username) {
+        User user = findUserByUserName(username);
+
+        if (user == null)
+            throw new UsernameNotFoundException("Cannot find user!");
+
+        user.setRoles(List.of("USER", "ADMIN"));
+        saveUser(user);
+
+        return user;
+    }
+
+    public User revokeAdminAccess(String username) {
+        User user = findUserByUserName(username);
+
+        if (user == null)
+            throw new UsernameNotFoundException("Cannot find user!");
+
+        user.setRoles(List.of("USER"));
+        saveUser(user);
+
         return user;
     }
 }
