@@ -3,6 +3,8 @@ package com.aviral.journalApp.service;
 import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,13 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Component
 public class UserService {
+
+//    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -34,7 +37,8 @@ public class UserService {
             user.setCreatedAt(LocalDateTime.now());
             userRepository.save(user);
         } catch (Exception e) {
-            log.error("Exception: {}", String.valueOf(e));
+//            logger.info("Error while creating user for username {} : {}", user.getUserName(), e.getMessage());
+            log.info("Error while creating user for username {} : {}", user.getUserName(), e.getMessage());
         }
     }
 
