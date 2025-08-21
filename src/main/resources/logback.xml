@@ -17,7 +17,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 <!--            <fileNamePattern>JournalApp-%d{yy-MM-dd_HH-mm}.%i.log</fileNamePattern>--> <!-- Will create new log file every minute-->
-            <fileNamePattern>JournalApp-%d{yy-MM-dd}.log</fileNamePattern> <!-- Will create new log file every day-->
+            <fileNamePattern>JournalApp-%d{yy-MM-dd}.%i.log</fileNamePattern> <!-- Will create new log file every day-->
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>10</maxHistory>
         </rollingPolicy>

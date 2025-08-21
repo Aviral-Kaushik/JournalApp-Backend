@@ -1,7 +1,9 @@
 package com.aviral.journalApp.controller;
 
+import com.aviral.journalApp.api.response.WeatherResponse;
 import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.service.UserService;
+import com.aviral.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WeatherService weatherService;
 
     @GetMapping
     private ResponseEntity<User> getUserById() {
@@ -63,5 +68,17 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("greet")
+    private ResponseEntity<?> greet() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        WeatherResponse weatherResponse = weatherService.getWeather("Meerut");
+
+        if (weatherResponse == null)
+            return new ResponseEntity<>("Hi " + authentication.getName(), HttpStatus.OK);
+
+        return new ResponseEntity<>("Hi " + authentication.getName() + ", Weather feels like: " + weatherResponse.getCurrent().getFeelslike() + " °C.", HttpStatus.OK);
     }
 }
