@@ -5,6 +5,12 @@ spring:
   profiles:
     active: dev # Active Profile Name must be entered here.
 
+weather:
+  api:
+    key: e950cec81a46e59701d93442db241521
+
+#weather-api-key: e950cec81a46e59701d93442db241521
+
 #logging:
 #  level:
 #    com:
