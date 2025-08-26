@@ -105,6 +105,7 @@ public class JournalEntryController {
 
         oldJournal.setTitle(!journal.getTitle().isEmpty() ? journal.getTitle() : oldJournal.getTitle());
         oldJournal.setContent(journal.getContent() != null && !journal.getContent().isEmpty() ? journal.getContent() : oldJournal.getContent());
+        oldJournal.setSentiment(journal.getSentiment() != null ? journal.getSentiment() : oldJournal.getSentiment());
 
         journalEntryService.saveJournal(oldJournal);
 

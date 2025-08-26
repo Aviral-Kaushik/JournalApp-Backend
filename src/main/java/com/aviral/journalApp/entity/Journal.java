@@ -1,5 +1,6 @@
 package com.aviral.journalApp.entity;
 
+import com.aviral.journalApp.enums.Sentiment;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,5 +23,6 @@ public class Journal {
 
     private String content;
 
+    private Sentiment sentiment;
     private LocalDateTime date;
 }
