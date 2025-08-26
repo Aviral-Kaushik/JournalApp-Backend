@@ -1,6 +1,7 @@
 package com.aviral.journalApp.controller;
 
 import com.aviral.journalApp.entity.User;
+import com.aviral.journalApp.repository.UserRepositoryImpl;
 import com.aviral.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepositoryImpl userRepository;
 
     @GetMapping("/get-users")
     public ResponseEntity<?> getAllUsers() {
@@ -45,6 +49,11 @@ public class AdminController {
         } catch (UsernameNotFoundException exception) {
             return new ResponseEntity<>("User Not Found", HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping("get-users-for-sentiment-analysis")
+    public ResponseEntity<List<User>> getUsersForSentimentAnalysis() {
+        return new ResponseEntity<>(userRepository.getUsersForSentimentAnalysis(), HttpStatus.OK);
     }
 
 }
