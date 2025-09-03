@@ -3,6 +3,7 @@ package com.aviral.journalApp.controller;
 import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.repository.UserRepositoryImpl;
 import com.aviral.journalApp.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Admin APIs", description = "Admin Role related APIs")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {

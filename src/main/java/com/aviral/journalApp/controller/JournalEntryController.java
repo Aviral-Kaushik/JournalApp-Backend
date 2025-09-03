@@ -4,6 +4,8 @@ import com.aviral.journalApp.entity.Journal;
 import com.aviral.journalApp.entity.User;
 import com.aviral.journalApp.service.JournalEntryService;
 import com.aviral.journalApp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "Journal APIs", description = "Journal CRUD Operations endpoints")
 @RestController
 @RequestMapping("journal")
 public class JournalEntryController {
@@ -24,6 +27,7 @@ public class JournalEntryController {
     @Autowired
     private UserService userService;
 
+    @Operation(summary = "This endpoint will return all journals of specific user.")
     @GetMapping
     public ResponseEntity<?> getAllJournalOfUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
